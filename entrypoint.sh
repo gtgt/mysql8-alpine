@@ -39,7 +39,8 @@ init_db() {
 
 	# create user if requested
 	if [ "$MYSQL_DATABASE" ] && [ "$MYSQL_USER" ] && [ "$MYSQL_PASSWORD" ]; then
-		echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' GRANT ALL ON \`$MYSQL_DATABASE\`.* to '$MYSQL_USER'@'%';"
+		echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
+		echo "GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%';"
 	fi
 
 	echo "FLUSH PRIVILEGES;"
