@@ -68,7 +68,7 @@ RUN cd /usr/src/mysql && \
 
 FROM alpine:3.15
 COPY entrypoint.sh /usr/local/bin
-RUN apk add --no-cache libstdc++6 openssl libcrypto1.1 zstd-libs libaio icu-libs icu-data libgcc libprotobuf-lite libevent lz4-libs libedit shadow && \
+RUN apk add --no-cache libstdc++6 openssl libcrypto1.1 zstd-libs libaio icu-libs icu-data libgcc libprotobuf-lite libevent lz4-libs libedit shadow xz && \
     useradd -m -r -d /var/lib/mysql -s /bin/false mysql && \
     mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld && \
     chmod a+x /usr/local/bin/entrypoint.sh

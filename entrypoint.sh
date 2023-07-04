@@ -80,6 +80,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 		case "$f" in
 			*.sql) mysql --defaults-file="$MYSQL_ROOT_DEFAULTS_FILE" --database="$MYSQL_DATABASE" < "$f" ;;
 			*.sql.gz) zcat "$f" | mysql --defaults-file="$MYSQL_ROOT_DEFAULTS_FILE" --database="$MYSQL_DATABASE" ;;
+			*.sql.xz) xzcat "$f" | mysql --defaults-file="$MYSQL_ROOT_DEFAULTS_FILE" --database="$MYSQL_DATABASE" ;;
 			*) echo "$f: is not a .sql or .sql.gz file. Skipping.." ;;
 		esac
 	done
