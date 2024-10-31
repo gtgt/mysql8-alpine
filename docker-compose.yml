@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+    mysql:
+        image: gtgt/mysql8-alpine:${MYSQL_VERSION}
+        build:
+            context: .
+            network: host
+            args:
+                ALPINE_VERSION: ${ALPINE_VERSION}
+                MYSQL_VERSION: ${MYSQL_VERSION}
+                BOOST_VERSION: ${BOOST_VERSION}
+        #restart: always
+        environment:
+            MYSQL_DATABASE: 'crm'
+            MYSQL_USER: 'crm'
+            MYSQL_PASSWORD: 'dZD7YTnnt28LaUV'
+            MYSQL_ROOT_PASSWORD: 'iacu6abohM1aenae'
+        ports:
+            - '3319:3306'
+        expose:
+            - 3309
+        command: ['--user=mysql', '--log-bin=FALSE', '--bind-address=0.0.0.0', '--port=${MYSQL_PORT:-3309}', '--pid-file=/run/mysqld/mysqld.pid', '--console', '--datadir=/var/lib/mysql']
+        volumes:
+            - db:/var/lib/mysql
+volumes:
+    db:
