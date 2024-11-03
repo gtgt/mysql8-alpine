@@ -1,0 +1,36 @@
+name: Build Docker Image
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - '*'           # Push events to every tag not containing /
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        #network: host
+        #,gtgt/mysql8-alpine:latest
+        tags: gtgt/mysql8-alpine:${{ github.ref_name }}
+        #linux/arm64,linux/arm/v7
+        platforms: linux/amd64
+        build-args: |
+          MYSQL_VERSION=${{ github.ref_name }}
+          ALPINE_VERSION=${{ vars.ALPINE_VERSION }}
+          BOOST_VERSION=${{ vars.BOOST_VERSION }}
