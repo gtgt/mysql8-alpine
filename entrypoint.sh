@@ -37,7 +37,7 @@ _mkpw() {
 # This allows users to add command-line options without
 # needing to specify the "mysqld" command
 if [ "${1:0:1}" = '-' ]; then
-	set -- mysqld "$@"
+	set -- mysqld $@
 fi
 
 # Check if entrypoint (and the container) is running as root
@@ -83,7 +83,7 @@ if [ "$1" = 'mysqld' ]; then
 		fi
 		if [ ! -d "$DATADIR" ]; then
 			mkdir -p "$DATADIR"
-			chown mysql:mysql "$DATADIR"
+			chown $MYSQLD_USER "$DATADIR"
 		fi
 
 		# The user can set a default_timezone either in a my.cnf file
@@ -103,8 +103,9 @@ if [ "$1" = 'mysqld' ]; then
 		# To avoid using password on commandline, put it in a temporary file.
 		# The file is only populated when and if the root password is set.
 		PASSFILE=$(mktemp -u /var/lib/mysql-files/XXXXXXXXXX)
+		mkdir -p /var/lib/mysql-files -m0700
+		chown $MYSQLD_USER /var/lib/mysql-files
 		$install_devnull "$PASSFILE"
-		mkdir -p /var/lib/mysql-files
 		# Define the client command used throughout the script
 		# "SET @@SESSION.SQL_LOG_BIN=0;" is required for products like group replication to work properly
 		mysql=( mysql --defaults-extra-file="$PASSFILE" --protocol=socket -uroot -hlocalhost --socket="$SOCKET" --init-command="SET @@SESSION.SQL_LOG_BIN=0;")
@@ -227,9 +228,9 @@ EOF
 	fi
 	# 4th value of /proc/$pid/stat is the ppid, same as getppid()
 	export MYSQLD_PARENT_PID=$(cat /proc/$$/stat|cut -d\  -f4)
-	exec "$@" --user=$MYSQLD_USER --console
+	exec $@ --user=$MYSQLD_USER --console
 else
-	exec "$@"
+	exec $@
 fi
 
 

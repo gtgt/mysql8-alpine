@@ -101,6 +101,6 @@ COPY --from=0 /usr/lib/pkgconfig/mysqlclient.pc /usr/lib/pkgconfig/mysqlclient.p
 
 EXPOSE 3306 33060
 ENTRYPOINT ["entrypoint.sh"]
-CMD "mysqld --bind-address=0.0.0.0"
+CMD ["mysqld", "--bind-address=0.0.0.0"]
 #VOLUME /var/lib/mysql
 
