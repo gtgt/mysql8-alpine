@@ -108,7 +108,7 @@ if [ "$1" = 'mysqld' ]; then
 		$install_devnull "$PASSFILE"
 		# Define the client command used throughout the script
 		# "SET @@SESSION.SQL_LOG_BIN=0;" is required for products like group replication to work properly
-		mysql=( mysql --defaults-extra-file="$PASSFILE" --protocol=socket -uroot -hlocalhost --socket="$SOCKET" --init-command="SET @@SESSION.SQL_LOG_BIN=0;")
+		mysql=( mysql --defaults-extra-file="$PASSFILE" --protocol=socket -uroot -hlocalhost --socket="$SOCKET" --init-command="SET @@SESSION.SQL_LOG_BIN=0;" $MYSQL_DATABASE )
 
 		for i in {30..0}; do
 			if mysqladmin --socket="$SOCKET" ping &>/dev/null; then
