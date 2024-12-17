@@ -31,7 +31,7 @@ RUN mkdir -p /usr/src/boost && \
     wget --progress=bar:force:noscroll --show-progress -qO- "https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION//./_}.tar.bz2" | tar --strip-components 1 -xjC /usr/src/boost && \
     gpg --recv-keys "$GPG_KEY" && \
     echo "Downloading MySQL ${MYSQL_VERSION} source..." && \
-    curl -fSL "https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz && \
+    (curl -fSL "https://cdn.mysql.com/Downloads/MySQL-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz || curl -fSL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz) && \
     mkdir -p /usr/src/mysql && \
     echo "Extracting source..." && \
     pigz -dc mysql.tar.gz|tar  --strip-components 1 -xC /usr/src/mysql -f - && \
