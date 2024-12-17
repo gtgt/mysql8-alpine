@@ -104,6 +104,7 @@ if [ "$1" = 'mysqld' ]; then
 		# The file is only populated when and if the root password is set.
 		PASSFILE=$(mktemp -u /var/lib/mysql-files/XXXXXXXXXX)
 		$install_devnull "$PASSFILE"
+		mkdir -p /var/lib/mysql-files
 		# Define the client command used throughout the script
 		# "SET @@SESSION.SQL_LOG_BIN=0;" is required for products like group replication to work properly
 		mysql=( mysql --defaults-extra-file="$PASSFILE" --protocol=socket -uroot -hlocalhost --socket="$SOCKET" --init-command="SET @@SESSION.SQL_LOG_BIN=0;")
@@ -155,7 +156,7 @@ EOF
 		fi
 
 		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]; then
-			echo "CREATE USER '"$MYSQL_USER"'@'%' IDENTIFIED BY '"$MYSQL_PASSWORD"' ;" | "${mysql[@]}"
+			echo "CREATE USER '"$MYSQL_USER"'@'%' BY '"$MYSQL_PASSWORD"' ;" | "${mysql[@]}"
 
 			if [ "$MYSQL_DATABASE" ]; then
 				echo "GRANT ALL ON \`"$MYSQL_DATABASE"\`.* TO '"$MYSQL_USER"'@'%' ;" | "${mysql[@]}"

@@ -27,8 +27,8 @@ jobs:
         push: true
         #network: host
         tags: gtgt/mysql8-alpine:${{ github.ref_name }},gtgt/mysql8-alpine:latest
-        #linux/arm/v7
-        platforms: linux/amd64,linux/arm64
+        #linux/arm/v7,linux/arm64
+        platforms: linux/amd64
         build-args: |
           MYSQL_VERSION=${{ github.ref_name }}
           ALPINE_VERSION=${{ vars.ALPINE_VERSION }}
