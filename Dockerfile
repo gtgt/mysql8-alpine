@@ -84,7 +84,7 @@ LABEL description="MySQL8 for Alpine Linux by GT"
 LABEL org.opencontainers.image.authors="Tamás Gere <gt@kani.hu>"
 
 COPY entrypoint.sh /usr/local/bin
-RUN apk add --no-cache bash libstdc++ gcompat gzip openssl1.1-compat libaio libgcc ncurses-libs shadow xz && \
+RUN apk add --no-cache bash libstdc++ gcompat gzip openssl1.1-compat libaio libgcc ncurses-libs shadow tzdata xz && \
     useradd -m -r -d /var/lib/mysql -s /bin/false mysql && \
     mkdir -p /run/mysqld /etc/my.cnf.d && chown mysql:mysql /run/mysqld && \
     chmod a+x /usr/local/bin/entrypoint.sh
@@ -101,6 +101,6 @@ COPY --from=0 /usr/lib/pkgconfig/mysqlclient.pc /usr/lib/pkgconfig/mysqlclient.p
 
 EXPOSE 3306 33060
 ENTRYPOINT ["entrypoint.sh"]
-CMD "--user=mysql --bind-address=0.0.0.0 --console"
+CMD "mysqld --bind-address=0.0.0.0"
 #VOLUME /var/lib/mysql
 
