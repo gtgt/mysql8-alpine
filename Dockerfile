@@ -54,7 +54,7 @@ RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     -DWITH_BUILD_ID=OFF \
     -DENABLED_PROFILING=ON \
     -DWITH_LTO=ON \
-    -DWITH_ROUTER=ON \
+    -DWITH_ROUTER=OFF \
     -DWITH_NDB=OFF \
     -DWITH_MYSQLX=ON \
     -DWITH_FIDO=none \
