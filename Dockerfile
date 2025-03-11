@@ -28,7 +28,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 RUN mkdir -p /usr/src/boost && \
     echo "Downloading boost v${BOOST_VERSION}..." && \
-    wget --progress=bar:force:noscroll --show-progress -qO- "https://archives.boost.io/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION//./_}.tar.gz" | tar --strip-components 1 -xjC /usr/src/boost && \
+    wget --progress=bar:force:noscroll --show-progress -qO- "https://archives.boost.io/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION//./_}.tar.bz2" | tar --strip-components 1 -xjC /usr/src/boost && \
     gpg --recv-keys "$GPG_KEY" && \
     echo "Downloading MySQL ${MYSQL_VERSION} source..." && \
     (curl -fSL "https://cdn.mysql.com/Downloads/MySQL-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz || curl -fSL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz) && \
