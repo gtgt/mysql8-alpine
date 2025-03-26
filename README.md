@@ -1,4 +1,4 @@
-MUSL compatibility was broken from 8.0.23 until 8.0.36.
+MUSL compatibility was broken from 8.0.23 until 8.0.35.
 
 # How to use this image
 Start a mysql server instance

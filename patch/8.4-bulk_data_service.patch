@@ -1,0 +1,13 @@
+diff --git a/sql/server_component/bulk_data_service.cc b/sql/server_component/bulk_data_service.cc
+index a093c958..2f55293d 100644
+--- a/sql/server_component/bulk_data_service.cc
++++ b/sql/server_component/bulk_data_service.cc
+@@ -1741,7 +1741,7 @@ DEFINE_METHOD(bool, is_table_supported, (THD * thd, const TABLE *table)) {
+   }
+ 
+   if (share->has_secondary_engine()) {
+-    my_error(ER_BULK_LOAD_SECONDARY_ENGINE, MYF(0));
++    my_error(ER_PREPARE_FOR_SECONDARY_ENGINE, MYF(0));
+     std::ostringstream err_strm;
+     err_strm << "LOAD DATA ALGORITHM = BULK not supported for tables with "
+                 "Secondary Engine";

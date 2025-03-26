@@ -3,13 +3,12 @@ ARG ALPINE_VERSION
 FROM alpine:${ALPINE_VERSION:-3.18}
 ARG MYSQL_VERSION
 ARG BOOST_VERSION
-ENV MYSQL_MAJOR 8.0
 ENV MYSQL_VERSION ${MYSQL_VERSION:-8.0.40}
 ENV BOOST_VERSION ${BOOST_VERSION:-1.77.0}
 ENV GPG_KEY "859BE8D7C586F538430B19C2467B942D3A79BD29"
 RUN apk add --no-cache --virtual .build-deps \
         pigz \
-        git patch \
+        git patch sed \
         gnupg \
         curl \
         linux-headers \
@@ -29,21 +28,23 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN mkdir -p /usr/src/boost && \
     echo "Downloading boost v${BOOST_VERSION}..." && \
     wget --progress=bar:force:noscroll --show-progress -qO- "https://archives.boost.io/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION//./_}.tar.bz2" | tar --strip-components 1 -xjC /usr/src/boost && \
-    gpg --recv-keys "$GPG_KEY" && \
-    echo "Downloading MySQL ${MYSQL_VERSION} source..." && \
-    (curl -fSL "https://cdn.mysql.com/Downloads/MySQL-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz || curl -fSL "https://cdn.mysql.com/archives/mysql-8.0/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz) && \
+    gpg --recv-keys "$GPG_KEY"
+RUN MYSQL_MAJOR=$(echo "${MYSQL_VERSION}"|sed 's/\.[^.]*$//') && \
+    echo "Downloading MySQL ${MYSQL_MAJOR} (${MYSQL_VERSION}) source..." && \
+    (curl -fSL "https://cdn.mysql.com/Downloads/MySQL-${MYSQL_MAJOR}/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz || curl -fSL "https://cdn.mysql.com/archives/mysql-${MYSQL_MAJOR}/mysql-${MYSQL_VERSION}.tar.gz" -o mysql.tar.gz) && \
     mkdir -p /usr/src/mysql && \
     echo "Extracting source..." && \
     pigz -dc mysql.tar.gz|tar  --strip-components 1 -xC /usr/src/mysql -f - && \
     rm mysql.tar.gz
 
-#COPY patch /patch
+COPY patch /patch
 
 #-DWITHSSL=openssl11/openssl3/system/yes
 RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     cd /usr/src/mysql && \
     mkdir -p build && cd build && \
-    #patch -p1 < /patch/libmysql-musl.patch && patch -p0 < /patch/icu68.patch && \
+    #(patch -p1 < /patch/libmysql-musl.patch; patch -p0 < /patch/icu68.patch; true) && \
+    (patch -p0 < /patch/8.4-bulk_data_service.patch || true) && \
     _CFLAGS="-DSIGEV_THREAD_ID=4" \
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_BUILD_TYPE=Release -DWITH_BOOST=/usr/src/boost -DDOWNLOAD_BOOST=OFF -DENABLE_DOWNLOADS=ON \
     -DCOMPILATION_COMMENT_SERVER="MySQL8 for Alpine Linux by GT" \
