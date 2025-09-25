@@ -65,6 +65,9 @@ if [ "$1" = 'mysqld' ]; then
 	DATADIR="$(_get_config 'datadir' "$@")"
 	SOCKET="$(_get_config 'socket' "$@")"
 
+	mkdir -p /var/lib/mysql-files -m0700
+	chown $MYSQLD_USER /var/lib/mysql-files
+
 	if [ ! -d "$DATADIR/mysql" ]; then
 		# If the password variable is a filename we use the contents of the file. We
 		# read this first to make sure that a proper error is generated for empty files.
@@ -103,8 +106,6 @@ if [ "$1" = 'mysqld' ]; then
 		# To avoid using password on commandline, put it in a temporary file.
 		# The file is only populated when and if the root password is set.
 		PASSFILE=$(mktemp -u /var/lib/mysql-files/XXXXXXXXXX)
-		mkdir -p /var/lib/mysql-files -m0700
-		chown $MYSQLD_USER /var/lib/mysql-files
 		$install_devnull "$PASSFILE"
 		# Define the client command used throughout the script
 		# "SET @@SESSION.SQL_LOG_BIN=0;" is required for products like group replication to work properly
