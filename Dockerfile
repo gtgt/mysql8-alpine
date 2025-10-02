@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.3-labs
 ARG ALPINE_VERSION
-FROM alpine:${ALPINE_VERSION:-3.18}
+FROM alpine:${ALPINE_VERSION:-3.22}
 ARG MYSQL_VERSION
 ARG BOOST_VERSION
-ENV MYSQL_VERSION ${MYSQL_VERSION:-8.0.40}
+ENV MYSQL_VERSION ${MYSQL_VERSION:-8.0.43}
 ENV BOOST_VERSION ${BOOST_VERSION:-1.77.0}
 ENV GPG_KEY "859BE8D7C586F538430B19C2467B942D3A79BD29"
 RUN apk add --no-cache --virtual .build-deps \
@@ -16,7 +16,7 @@ RUN apk add --no-cache --virtual .build-deps \
         gcc g++ bison \
         make cmake \
         libaio-dev \
-        openssl1.1-compat-dev \
+        openssl-dev \
         libtirpc-dev rpcgen \
         libnsl ncurses-dev \
         perl perl-dev perl-app-cpanminus perl-devel-checklib perl-dbi
@@ -42,9 +42,9 @@ COPY patch /patch
 #-DWITHSSL=openssl11/openssl3/system/yes
 RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     cd /usr/src/mysql && \
-    mkdir -p build && cd build && \
     #(patch -p1 < /patch/libmysql-musl.patch; patch -p0 < /patch/icu68.patch; true) && \
-    (patch -p0 < /patch/8.4-bulk_data_service.patch || true) && \
+    (patch -p1 < /patch/openssl3.patch; patch -p1 < /patch/8.4-bulk_data_service.patch; true) && \
+    mkdir -p build && cd build && \
     _CFLAGS="-DSIGEV_THREAD_ID=4" \
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_BUILD_TYPE=Release -DWITH_BOOST=/usr/src/boost -DDOWNLOAD_BOOST=OFF -DENABLE_DOWNLOADS=ON \
     -DCOMPILATION_COMMENT_SERVER="MySQL8 for Alpine Linux by GT" \
@@ -85,7 +85,7 @@ LABEL description="MySQL8 for Alpine Linux by GT"
 LABEL org.opencontainers.image.authors="Tamás Gere <gt@kani.hu>"
 
 COPY entrypoint.sh /usr/local/bin
-RUN apk add --no-cache bash libstdc++ gcompat gzip openssl1.1-compat libaio libgcc ncurses-libs shadow tzdata xz && \
+RUN apk add --no-cache bash libstdc++ gcompat gzip openssl libaio libgcc ncurses-libs shadow tzdata xz && \
     useradd -m -r -d /var/lib/mysql -s /bin/false mysql && \
     mkdir -p /run/mysqld /etc/my.cnf.d && chown mysql:mysql /run/mysqld && \
     chmod a+x /usr/local/bin/entrypoint.sh

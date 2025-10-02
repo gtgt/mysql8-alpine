@@ -1,0 +1,12 @@
+diff --git a/plugin/x/src/interface/ssl_session_options.h b/plugin/x/src/interface/ssl_session_options.h
+index 04c43a26..01cadb45 100644
+--- a/plugin/x/src/interface/ssl_session_options.h
++++ b/plugin/x/src/interface/ssl_session_options.h
+@@ -28,6 +28,7 @@
+ 
+ #include <string>
+ #include <vector>
++#include <cstdint>
+ 
+ namespace xpl {
+ namespace iface {
