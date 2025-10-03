@@ -1,0 +1,13 @@
+diff --git a/sql/signal_handler.cc b/sql/signal_handler.cc
+index 7155544a..4dbb4f38 100644
+--- a/sql/signal_handler.cc
++++ b/sql/signal_handler.cc
+@@ -182,8 +182,6 @@ void print_fatal_signal(int sig) {
+         "Some pointers may be invalid and cause the dump to abort.\n");
+ 
+     my_safe_printf_stderr("Query (%p): ", thd->query().str);
+-    my_safe_puts_stderr(thd->query().str,
+-                        std::min(size_t{1024}, thd->query().length));
+     my_safe_printf_stderr("Connection ID (thread ID): %u\n", thd->thread_id());
+     my_safe_printf_stderr("Status: %s\n\n", kreason);
+   }

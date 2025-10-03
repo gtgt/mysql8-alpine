@@ -43,7 +43,7 @@ COPY patch /patch
 RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     cd /usr/src/mysql && \
     #(patch -p1 < /patch/libmysql-musl.patch; patch -p0 < /patch/icu68.patch; true) && \
-    (patch -p1 < /patch/openssl3.patch; patch -p1 < /patch/8.4-bulk_data_service.patch; patch -p1 < /patch/8.0.41-my_stacktrace.patch; true) && \
+    (patch -p1 < /patch/openssl3.patch; patch -p1 < /patch/8.4-bulk_data_service.patch; patch -p1 < /patch/8.0.41-my_safe_puts_stderr.patch; patch -p1 < /patch/8.0.43-my_stacktrace.patch; true) && \
     mkdir -p build && cd build && \
     _CFLAGS="-DSIGEV_THREAD_ID=4" \
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_BUILD_TYPE=Release -DWITH_BOOST=/usr/src/boost -DDOWNLOAD_BOOST=OFF -DENABLE_DOWNLOADS=ON \
