@@ -87,7 +87,7 @@ LABEL org.opencontainers.image.authors="Tamás Gere <gt@kani.hu>"
 COPY entrypoint.sh /usr/local/bin
 RUN apk add --no-cache bash libstdc++ gcompat gzip openssl libaio libgcc ncurses-libs shadow tzdata xz && \
     useradd -m -r -d /var/lib/mysql -s /bin/false mysql && \
-    mkdir -p /run/mysqld /etc/my.cnf.d && chown mysql:mysql /run/mysqld && \
+    mkdir -p /run/mysqld /etc/my.cnf.d /var/lib/mysql-files && chown mysql:mysql /run/mysqld /var/lib/mysql-files && \
     chmod a+x /usr/local/bin/entrypoint.sh
 COPY --from=0 /etc/my.cnf /etc/my.cnf
 COPY --from=0 /usr/local/bin /usr/local/bin
@@ -104,4 +104,5 @@ EXPOSE 3306 33060
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["mysqld", "--bind-address=0.0.0.0"]
 #VOLUME /var/lib/mysql
+#VOLUME /var/lib/mysql-files
 

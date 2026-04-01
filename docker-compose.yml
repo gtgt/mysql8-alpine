@@ -1,4 +1,3 @@
-version: '3.9'
 services:
     mysql:
         image: gtgt/mysql8-alpine:${MYSQL_VERSION}
@@ -10,6 +9,7 @@ services:
                 MYSQL_VERSION: ${MYSQL_VERSION}
                 BOOST_VERSION: ${BOOST_VERSION}
         #restart: always
+        user: mysql
         environment:
             MYSQL_DATABASE: 'crm'
             MYSQL_USER: 'crm'

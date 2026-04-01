@@ -65,8 +65,8 @@ if [ "$1" = 'mysqld' ]; then
 	DATADIR="$(_get_config 'datadir' "$@")"
 	SOCKET="$(_get_config 'socket' "$@")"
 
-	mkdir -p /var/lib/mysql-files -m0700
-	chown $MYSQLD_USER /var/lib/mysql-files
+	mkdir -p /var/lib/mysql-files -m0700 || true
+	chown $MYSQLD_USER /var/lib/mysql-files || true
 
 	if [ ! -d "$DATADIR/mysql" ]; then
 		# If the password variable is a filename we use the contents of the file. We
