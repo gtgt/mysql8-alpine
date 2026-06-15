@@ -1,0 +1,61 @@
+diff --git a/components/group_replication_resource_manager/resource_manager_memory_stats.h b/components/group_replication_resource_manager/resource_manager_memory_stats.h
+index 80cf096d..468b2a2d 100644
+--- a/components/group_replication_resource_manager/resource_manager_memory_stats.h
++++ b/components/group_replication_resource_manager/resource_manager_memory_stats.h
+@@ -9,6 +9,7 @@
+ #include <cstdint>
+ #include <cstring>
+ #include <string>
++#include <ctime>
+ #include "resource_manager_procfs.h"
+ 
+ namespace gr_resource_manager {
+diff --git a/components/telemetry/tm_ns.cc b/components/telemetry/tm_ns.cc
+index 91245222..39bab84b 100644
+--- a/components/telemetry/tm_ns.cc
++++ b/components/telemetry/tm_ns.cc
+@@ -73,7 +73,14 @@ int open_network_namespace(const std::string &network_namespace, int *fd) {
+   if (*fd == -1) {
+     char errbuf[PATH_MAX];
+     const char *errmsg;
++#if defined(__GLIBC__)
+     errmsg = strerror_r(errno, errbuf, sizeof(errbuf));
++#else
++    if (strerror_r(errno, errbuf, sizeof(errbuf)))
++      errmsg = nullptr;
++    else
++      errmsg = errbuf;
++#endif
+     log_error("%s: Failed to open file '%s': %s", component_name,
+               path_to_ns_file, errmsg);
+     *fd = NO_FD;
+@@ -90,7 +97,14 @@ int set_network_namespace(int fd) {
+   if (setns(fd, CLONE_NEWNET) != 0) {
+     char errbuf[PATH_MAX];
+     const char *errmsg;
++#if defined(__GLIBC__)
+     errmsg = strerror_r(errno, errbuf, sizeof(errbuf));
++#else
++    if (strerror_r(errno, errbuf, sizeof(errbuf)))
++      errmsg = nullptr;
++    else
++      errmsg = errbuf;
++#endif
+     log_error("%s: setns failed for fd %d: %s", component_name, fd, errmsg);
+     return 1;
+   }
+@@ -103,7 +117,14 @@ int close_network_namespace(int fd) {
+   if (close(fd) != 0) {
+     char errbuf[PATH_MAX];
+     const char *errmsg;
++#if defined(__GLIBC__)
+     errmsg = strerror_r(errno, errbuf, sizeof(errbuf));
++#else
++    if (strerror_r(errno, errbuf, sizeof(errbuf)))
++      errmsg = nullptr;
++    else
++      errmsg = errbuf;
++#endif
+     log_error("%s: close network namespace failed for fd %d: %s",
+               component_name, fd, errmsg);
+     return 1;

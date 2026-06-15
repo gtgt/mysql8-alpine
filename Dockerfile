@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.3-labs
 ARG ALPINE_VERSION
-FROM alpine:${ALPINE_VERSION:-3.22}
+FROM alpine:${ALPINE_VERSION:-3.24}
 ARG MYSQL_VERSION
 ARG BOOST_VERSION
-ENV MYSQL_VERSION ${MYSQL_VERSION:-8.0.43}
+ENV MYSQL_VERSION ${MYSQL_VERSION:-8.4.9}
 ENV BOOST_VERSION ${BOOST_VERSION:-1.77.0}
 ENV GPG_KEY "859BE8D7C586F538430B19C2467B942D3A79BD29"
 RUN apk add --no-cache --virtual .build-deps \
@@ -43,7 +43,7 @@ COPY patch /patch
 RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     cd /usr/src/mysql && \
     #(patch -p1 < /patch/libmysql-musl.patch; patch -p0 < /patch/icu68.patch; true) && \
-    (patch -p1 < /patch/8.4.9-zlib-lseek.patch; patch -p1 < /patch/openssl3.patch; patch -p1 < /patch/8.4-bulk_data_service.patch; patch -p1 < /patch/8.0.41-my_safe_puts_stderr.patch; patch -p1 < /patch/8.0.43-my_stacktrace.patch; patch -p1 < /patch/8.0.45-ssl_context_builder.patch; true) && \
+    (patch -p1 < /patch/8.4.9-zlib-lseek.patch; patch -p1 < /patch/9.7.0-ctime-strerror_r.patch; patch -p1 < /patch/openssl3.patch; patch -p1 < /patch/8.4-bulk_data_service.patch; patch -p1 < /patch/8.0.41-my_safe_puts_stderr.patch; patch -p1 < /patch/8.0.43-my_stacktrace.patch; patch -p1 < /patch/8.0.45-ssl_context_builder.patch; true) && \
     mkdir -p build && cd build && \
     _CFLAGS="-DSIGEV_THREAD_ID=4" \
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_BUILD_TYPE=Release -DWITH_BOOST=/usr/src/boost -DDOWNLOAD_BOOST=OFF -DENABLE_DOWNLOADS=ON \
@@ -79,7 +79,7 @@ RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
 RUN --mount=type=cache,target=/usr/src/mysql/build,sharing=locked \
     cp /usr/src/mysql/build/scripts/mysqlclient.pc /usr/lib/pkgconfig/mysqlclient.pc
 
-FROM alpine:${ALPINE_VERSION:-3.18}
+FROM alpine:${ALPINE_VERSION:-3.24}
 MAINTAINER "Tamás Gere <gt@kani.hu>"
 LABEL description="MySQL8 for Alpine Linux by GT"
 LABEL org.opencontainers.image.authors="Tamás Gere <gt@kani.hu>"
