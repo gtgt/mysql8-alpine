@@ -10,7 +10,7 @@ RUN apk add --no-cache --virtual .build-deps \
         pigz \
         git patch sed \
         gnupg \
-        curl \
+        curl curl-dev \
         linux-headers \
         libc-dev gcompat libc6-compat \
         gcc g++ bison \
